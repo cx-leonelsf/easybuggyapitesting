@@ -1,0 +1,6 @@
+FROM openjdk:17-oracle
+
+COPY eb-apisec.jar /app/eb-apisec.jar
+
+WORKDIR /app
+CMD ["java", "-jar", "eb-apisec.jar"]

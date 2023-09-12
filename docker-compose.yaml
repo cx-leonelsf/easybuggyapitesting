@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  easybuggy:
+    build:
+      context: ./easyBuggy
+    ports:
+      - "3000:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  checkmarx-dast:
+    image: checkmarx/dast:latest
+    environment:
+      - CX_APIKEY=${APIKEY}
+    volumes:
+      - ./dast:/dast
+    command: >
+      api 
+      --environment-id=${ENVIRONMENT_ID}
+      --config=/dast/EasyBuggy-Local-Zap-Config.yaml
+      --base-url=${BASE_URL}
+      --verbose
+      --retry=3
+      --retry-delay=20
+      --openapi /dast/EasyBuggy-Swagger.yaml
+    depends_on:
+      - easybuggy

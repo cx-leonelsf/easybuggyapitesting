@@ -1,0 +1,50 @@
+env:
+    contexts:
+        - authentication:
+            parameters: {}
+            verification:
+                method: response
+                pollFrequency: 60
+                pollUnits: requests
+          excludePaths: []
+          includePaths:
+            - http://easybuggy:8080/
+          name: Default Context
+          sessionManagement:
+            method: cookie
+            parameters: {}
+          urls:
+            - http://easybuggy:8080/
+    parameters:
+        failOnError: true
+        failOnWarning: false
+        progressToStdout: true
+    vars: {}
+jobs:
+    - name: passiveScan-config
+      parameters:
+        enableTags: false
+        maxAlertsPerRule: 0
+        maxBodySizeInBytesToScan: 0
+        scanOnlyInScope: true
+      rules: []
+      type: passiveScan-config
+    - name: openapi
+      parameters:
+        apiFile: /dast/EasyBuggy-Swagger.yaml
+        apiUrl: ""
+        context: Default Context
+        targetUrl: http://easybuggy:8080/
+      type: openapi
+    - name: passiveScan-wait
+      parameters:
+        maxDuration: 0
+      type: passiveScan-wait
+    - name: report
+      parameters:
+        reportDescription: ""
+        reportDir: /dast/test_output/dast-output-2222330051
+        reportFile: ZAP-Report
+        reportTitle: ZAP Scanning Report
+        template: traditional-json-plus
+      type: report
