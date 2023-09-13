@@ -2,31 +2,33 @@ version: '3'
 
 services:
   easybuggy:
-    build:
-      context: ./easyBuggy
+    image: openjdk:17-oracle
+    volumes:
+      - ./project_target/${PROJECT_NAME}:/app/project.jar
+    working_dir: /app
+    command: ["java", "-jar", "project.jar"]
     ports:
       - "3000:8080"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/eb/v1/"]
-      interval: 3s
-      timeout: 3s
+      test: ["CMD", "curl", "-f", "${HEALTH_CHECK_URL}"]
+      interval: 10s
+      timeout: 5s
       retries: 10
   checkmarx-dast:
     image: checkmarx/dast:latest
     environment:
       - CX_APIKEY=${APIKEY}
     volumes:
-      - ./dast:/dast
+      - ./project_target:/dast
     command: >
       api 
       --environment-id=${ENVIRONMENT_ID}
-      --config=/dast/EasyBuggy-Local-Zap-Config.yaml
+      --config=/dast/${CONFIG_NAME}
       --base-url=${BASE_URL}
       --verbose
-      --output ./dast/results
       --retry=3
       --retry-delay=20
-      --openapi /dast/EasyBuggy-Swagger.yaml
+      --openapi /dast/${OPENAPI_NAME}
     depends_on:
       easybuggy:
         condition: service_healthy
