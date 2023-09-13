@@ -43,7 +43,7 @@ jobs:
     - name: report
       parameters:
         reportDescription: ""
-        reportDir: /dast/test_output/dast-output-2222330051
+        reportDir: /dast/results/dast-output-7363065
         reportFile: ZAP-Report
         reportTitle: ZAP Scanning Report
         template: traditional-json-plus

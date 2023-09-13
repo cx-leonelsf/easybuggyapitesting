@@ -7,10 +7,10 @@ services:
     ports:
       - "3000:8080"
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
+      test: ["CMD", "curl", "-f", "http://localhost:8080/eb/v1/"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
   checkmarx-dast:
     image: checkmarx/dast:latest
     environment:
@@ -23,8 +23,10 @@ services:
       --config=/dast/EasyBuggy-Local-Zap-Config.yaml
       --base-url=${BASE_URL}
       --verbose
+      --output ./dast/results
       --retry=3
       --retry-delay=20
       --openapi /dast/EasyBuggy-Swagger.yaml
     depends_on:
-      - easybuggy
+      easybuggy:
+        condition: service_healthy
