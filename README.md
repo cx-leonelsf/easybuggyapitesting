@@ -1,2 +1,2 @@
 # apitestingcli
-APITesting testing docker
+APITesting docker compose tool
