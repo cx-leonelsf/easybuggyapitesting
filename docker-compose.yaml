@@ -12,8 +12,8 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "${HEALTH_CHECK_URL}"]
       interval: 10s
-      timeout: 5s
-      retries: 10
+      timeout: 1s
+      retries: 30
   checkmarx-dast:
     image: checkmarx/dast:latest
     environment:
